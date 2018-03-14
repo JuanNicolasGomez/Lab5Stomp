@@ -9,6 +9,8 @@ var app = (function () {
     }
     
     var stompClient = null;
+    var subscription = null;
+    var number = null;
 
     var addPointToCanvas = function (point) {        
         var canvas = document.getElementById("canvas");
@@ -24,7 +26,13 @@ var app = (function () {
             posy = pos.y;
         var point = new Point(posx,posy);
         addPointToCanvas(point);
-        stompClient.send("/topic/newpoint", {}, JSON.stringify(point));
+        stompClient.send("/topic/newpoint." + number, {}, JSON.stringify(point));
+    }
+
+    var clearCanvas = function(){
+       var canvas = document.getElementById("canvas");
+       var ctx = canvas.getContext("2d");
+       ctx.clearRect(0,0, canvas.width, canvas.height);
     }
     
     
@@ -45,7 +53,7 @@ var app = (function () {
         //subscribe to /topic/TOPICXX when connections succeed
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/newpoint', function (eventbody) {
+            subscription = stompClient.subscribe('/topic/newpoint.' + number, function (eventbody) {
                 var point = eventbody.body;
 				var theObject=JSON.parse(eventbody.body);
 				//alert(theObject);
@@ -55,15 +63,25 @@ var app = (function () {
 
     };
     
-    
+    var unsubscribe = function(){
+        if (subscription != null){
+            subscription.unsubscribe();
+            console.log("unsubscribed")
+        }
+    };
 
     return {
 
         init: function () {
+            unsubscribe();
+            clearCanvas();
+            number = document.getElementById("num").value;
             var can = document.getElementById("canvas");
             var pos = can.addEventListener("click",addPointByClicking);
             //websocket connection
-            connectAndSubscribe();
+            if(number != null){
+                connectAndSubscribe();
+            }
         },
 
         publishPoint: function(px,py){
@@ -74,7 +92,7 @@ var app = (function () {
 			//creando un objeto literal
 			//stompClient.send("/topic/newpoint", {}, JSON.stringify({x:10,y:10}));
 			//enviando un objeto creado a partir de una clase
-			stompClient.send("/topic/newpoint", {}, JSON.stringify(pt));
+			stompClient.send("/topic/newpoint." + number, {}, JSON.stringify(pt));
         },
 
         disconnect: function () {
@@ -84,8 +102,6 @@ var app = (function () {
             setConnected(false);
             console.log("Disconnected");
         }
-
-        //addPointByClicking: addPointByClicking
     };
 
 })();
