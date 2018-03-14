@@ -17,6 +17,15 @@ var app = (function () {
         ctx.arc(point.x, point.y, 3, 0, 2 * Math.PI);
         ctx.stroke();
     };
+
+    var addPointByClicking = function(e){
+        var pos = getMousePosition(e);
+            posx = pos.x;
+            posy = pos.y;
+        var point = new Point(posx,posy);
+        addPointToCanvas(point);
+        stompClient.send("/topic/newpoint", {}, JSON.stringify(point));
+    }
     
     
     var getMousePosition = function (evt) {
@@ -28,7 +37,6 @@ var app = (function () {
         };
     };
 
-
     var connectAndSubscribe = function () {
         console.info('Connecting to WS...');
         var socket = new SockJS('/stompendpoint');
@@ -38,8 +46,10 @@ var app = (function () {
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
             stompClient.subscribe('/topic/newpoint', function (eventbody) {
+                var point = eventbody.body;
 				var theObject=JSON.parse(eventbody.body);
-				alert(theObject);
+				//alert(theObject);
+				addPointToCanvas(theObject);
             });
         });
 
@@ -51,7 +61,7 @@ var app = (function () {
 
         init: function () {
             var can = document.getElementById("canvas");
-            
+            var pos = can.addEventListener("click",addPointByClicking);
             //websocket connection
             connectAndSubscribe();
         },
@@ -60,12 +70,11 @@ var app = (function () {
             var pt=new Point(px,py);
             console.info("publishing point at "+pt);
             addPointToCanvas(pt);
-
             //publicar el evento
 			//creando un objeto literal
 			//stompClient.send("/topic/newpoint", {}, JSON.stringify({x:10,y:10}));
 			//enviando un objeto creado a partir de una clase
-			stompClient.send("/topic/newpoint", {}, JSON.stringify(pt)); 
+			stompClient.send("/topic/newpoint", {}, JSON.stringify(pt));
         },
 
         disconnect: function () {
@@ -75,6 +84,8 @@ var app = (function () {
             setConnected(false);
             console.log("Disconnected");
         }
+
+        //addPointByClicking: addPointByClicking
     };
 
 })();
