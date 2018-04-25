@@ -28,14 +28,15 @@ public class STOMPMessagesHandler {
     @MessageMapping("/newpoint.{numdibujo}")
     public void handlePointEvent(Point pt, @DestinationVariable String numdibujo) throws Exception {
         Jedis jedis = JedisUtil.getPool().getResource();
-        //jedis.watch("x", "y");
-        /*Transaction t = jedis.multi();
+        jedis.watch("x", "y");
+        Transaction t = jedis.multi();
         t.set("x", "x");
         t.exec();
         jedis.rpush("x", String.valueOf(pt.getX()));
         jedis.rpush("y", String.valueOf(pt.getX()));
         List<Object> res=t.exec();
-        jedis.close();*/
+        System.out.println(res.size());
+        jedis.close();
         System.out.println("Nuevo punto recibido en el servidor!:"+pt);
         if(!polygonpts.containsKey(numdibujo)){
             polygonpts.put(numdibujo, new ArrayList<>());
