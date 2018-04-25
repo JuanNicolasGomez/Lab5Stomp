@@ -32,14 +32,10 @@ public class STOMPMessagesHandler {
         Transaction t = jedis.multi();
         t.set("x", "y");
         System.out.println("SIZEEEEEE:   -  " + t.exec().size());
-        String[] valx;
-        valx= new String[]{String.valueOf(pt.getX())};
-        String[] valy;
-        valy= new String[]{String.valueOf(pt.getY())};
-        jedis.rpush("x",valx);
-        jedis.rpush("y", valy);
+        t.rpush("x", String.valueOf(pt.getX()));
+        t.rpush("y", String.valueOf(pt.getY()));
         List<Object> res=t.exec();
-        System.out.println(res.size());
+        System.out.println("SIZEEEE2222: " + res.size());
         jedis.close();
         System.out.println("Nuevo punto recibido en el servidor!:"+pt);
         if(!polygonpts.containsKey(numdibujo)){
