@@ -30,7 +30,7 @@ public class STOMPMessagesHandler {
         Jedis jedis = JedisUtil.getPool().getResource();
         jedis.watch("x", "y");
         Transaction t = jedis.multi();
-        t.set("x", "y");
+        //t.set("points", "x);
         //System.out.println("SIZEEEEEE:   -  " + t.exec().size());
         t.rpush("x", String.valueOf(pt.getX()));
         t.rpush("y", String.valueOf(pt.getY()));
