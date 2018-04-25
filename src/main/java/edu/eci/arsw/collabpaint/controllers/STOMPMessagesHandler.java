@@ -32,7 +32,6 @@ public class STOMPMessagesHandler {
         Transaction t = jedis.multi();
         t.set("x", "y");
         System.out.println("SIZEEEEEE:   -  " + t.exec().size());
-        System.out.println("valueeeeee:   -  " + t.exec().get(0));
         String[] valx;
         valx= new String[]{String.valueOf(pt.getX())};
         String[] valy;
