@@ -30,10 +30,10 @@ public class STOMPMessagesHandler {
         Jedis jedis = JedisUtil.getPool().getResource();
         jedis.watch("x", "y");
         Transaction t = jedis.multi();
-        t.set("x", "x");
-        t.exec();
+        t.set("x", "y");
+        System.out.println("SIZEEEEEE:   -  " + t.exec().size());
         jedis.rpush("x", String.valueOf(pt.getX()));
-        jedis.rpush("y", String.valueOf(pt.getX()));
+        jedis.rpush("y", String.valueOf(pt.getY()));
         List<Object> res=t.exec();
         System.out.println(res.size());
         jedis.close();
