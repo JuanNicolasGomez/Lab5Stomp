@@ -33,8 +33,12 @@ public class STOMPMessagesHandler {
         t.set("x", "y");
         System.out.println("SIZEEEEEE:   -  " + t.exec().size());
         System.out.println("valueeeeee:   -  " + t.exec().get(0));
-        jedis.rpush("x", String.valueOf(pt.getX()));
-        jedis.rpush("y", String.valueOf(pt.getY()));
+        String[] valx;
+        valx= new String[]{String.valueOf(pt.getX())};
+        String[] valy;
+        valy= new String[]{String.valueOf(pt.getY())};
+        jedis.rpush("x",valx);
+        jedis.rpush("y", valy);
         List<Object> res=t.exec();
         System.out.println(res.size());
         jedis.close();
