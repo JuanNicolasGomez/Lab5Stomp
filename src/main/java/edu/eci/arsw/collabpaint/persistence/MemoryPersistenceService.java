@@ -21,7 +21,7 @@ public class MemoryPersistenceService implements PersistenceService {
     @Override
     public void handleNewPoint(Point pt, String numDibujo) {
         //System.out.println("Using memory handler");
-        System.out.println("Nuevo punto recibido en el servidor! :" + pt);
+        System.out.println("Nuevo punto recibido en el servidor! (Persistencia usando Memoria) :" + pt);
         if (!polygonpts.containsKey(numDibujo)) {
             polygonpts.put(numDibujo, new ArrayList<>());
             polygonpts.get(numDibujo).add(pt);

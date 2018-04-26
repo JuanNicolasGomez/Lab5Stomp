@@ -21,8 +21,6 @@ public class RedisPersistenceService implements PersistenceService {
     private SimpMessagingTemplate msgt;
 
 
-    private ConcurrentHashMap<String, ArrayList<Point>> polygonpts=  new ConcurrentHashMap<>();
-
     private CopyOnWriteArrayList<Point> points = new CopyOnWriteArrayList<>();
 
     private String luaScript = "local xval,yval; \n" +
@@ -50,7 +48,7 @@ public class RedisPersistenceService implements PersistenceService {
         Response<Object> luares = t.eval(luaScript.getBytes(), 0,"0".getBytes());
         List<Object> res=t.exec();
         if (res.size() >0) {
-            System.out.println("Nuevo punto recibido en el servidor! :" + pt);
+            System.out.println("Nuevo punto recibido en el servidor! (Peristencia usando REDIS) :" + pt);
             if (((ArrayList) luares.get()).size() == 2) {
                 System.out.println("First Point X Value: " + new String((byte[]) ((ArrayList) (((ArrayList) luares.get()).get(0))).get(0)));
                 ArrayList<Object> coordX = (ArrayList)(((ArrayList) luares.get()).get(0));
@@ -69,21 +67,6 @@ public class RedisPersistenceService implements PersistenceService {
         }
         jedis.close();
 
-
-        /*
-        if (!polygonpts.containsKey(numDibujo)) {
-            polygonpts.put(numDibujo, new ArrayList<>());
-            polygonpts.get(numDibujo).add(pt);
-        } else {
-            polygonpts.get(numDibujo).add(pt);
-        }
-
-        if (polygonpts.get(numDibujo).size() == 4) {
-            msgt.convertAndSend("/topic/newpolygon." + numDibujo, polygonpts.get(numDibujo));
-            polygonpts.get(numDibujo).clear();
-        }
-        msgt.convertAndSend("/topic/newpoint." + numDibujo, pt);
-        */
 
     }
 }
