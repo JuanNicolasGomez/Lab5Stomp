@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service
+//@Service
 public class MemoryPersistenceService implements PersistenceService {
 
     @Autowired
