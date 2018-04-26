@@ -26,8 +26,8 @@ public class STOMPMessagesHandler {
             "if (redis.call('LLEN','x')==4) then \n" +
             "\txval=redis.call('LRANGE','x',0,-1);\n" +
             "\tyval=redis.call('LRANGE','y',0,-1);\n" +
-            "\tredis.call('DEL','dalist1'); \n" +
-            "\tredis.call('DEL','dalist2'); \t\t\n" +
+            "\tredis.call('DEL','x'); \n" +
+            "\tredis.call('DEL','y'); \t\t\n" +
             "\treturn {xval,yval}; \n" +
             "else \n" +
             "\treturn {}; \n" +
