@@ -57,7 +57,7 @@ public class RedisPersistenceService implements PersistenceService {
                     //Point p = new Point()
                 }
 
-                msgt.convertAndSend("/topic/newpolygon." + numDibujo, polygonpts.get(numDibujo));
+                //msgt.convertAndSend("/topic/newpolygon." + numDibujo, polygonpts.get(numDibujo));
             }
             msgt.convertAndSend("/topic/newpoint." + numDibujo, pt);
         }else{
@@ -66,7 +66,7 @@ public class RedisPersistenceService implements PersistenceService {
         jedis.close();
 
 
-
+        /*
         if (!polygonpts.containsKey(numDibujo)) {
             polygonpts.put(numDibujo, new ArrayList<>());
             polygonpts.get(numDibujo).add(pt);
@@ -79,6 +79,7 @@ public class RedisPersistenceService implements PersistenceService {
             polygonpts.get(numDibujo).clear();
         }
         msgt.convertAndSend("/topic/newpoint." + numDibujo, pt);
+        */
 
     }
 }
