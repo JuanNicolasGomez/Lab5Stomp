@@ -12,6 +12,7 @@ import redis.clients.jedis.Transaction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class RedisPersistenceService implements PersistenceService {
@@ -22,7 +23,7 @@ public class RedisPersistenceService implements PersistenceService {
 
     private ConcurrentHashMap<String, ArrayList<Point>> polygonpts=  new ConcurrentHashMap<>();
 
-    private ArrayList<Point> points;
+    private CopyOnWriteArrayList<Point> points = new CopyOnWriteArrayList<>();
 
     private String luaScript = "local xval,yval; \n" +
             "if (redis.call('LLEN','x')==4) then \n" +
@@ -52,12 +53,15 @@ public class RedisPersistenceService implements PersistenceService {
             System.out.println("Nuevo punto recibido en el servidor! :" + pt);
             if (((ArrayList) luares.get()).size() == 2) {
                 System.out.println("First Point X Value: " + new String((byte[]) ((ArrayList) (((ArrayList) luares.get()).get(0))).get(0)));
-                points = new ArrayList<>();
+                ArrayList<Object> coordX = (ArrayList)(((ArrayList) luares.get()).get(0));
+                ArrayList<Object> coordY = (ArrayList)(((ArrayList) luares.get()).get(1));
                 for(int i = 0; i <4; i++){
-                    //Point p = new Point()
+                    Point p = new Point(Integer.parseInt(new String((byte[]) coordX.get(i))), Integer.parseInt(new String((byte[]) coordY.get(i))));
+                    points.add(p);
                 }
 
-                //msgt.convertAndSend("/topic/newpolygon." + numDibujo, polygonpts.get(numDibujo));
+                msgt.convertAndSend("/topic/newpolygon." + numDibujo, points);
+                points.clear();
             }
             msgt.convertAndSend("/topic/newpoint." + numDibujo, pt);
         }else{
